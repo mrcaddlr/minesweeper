@@ -90,7 +90,8 @@
     position:absolute; top:50%; left:50%;
     width: calc(100vw - 24px); max-width: calc((100vw - 24px) / var(--ui-scale, 1));
     max-height: calc((100vh - 24px) / var(--ui-scale, 1));
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap: 9px; padding: 8px;
+    display:flex; flex-direction:column; align-items:center;
+    justify-content:center; justify-content:safe center; gap: 9px; padding: 8px;
     transform: translate(-50%, -50%) scale(var(--ui-scale, 1)); transform-origin:center center; transition: transform .15s ease;
     overflow-y:auto; overflow-x:hidden; box-sizing:border-box;
   }
@@ -100,13 +101,21 @@
   /* On wide-enough screens, move all the controls into a side column so a large
      board never has to compete with them for vertical space. */
   @media (min-width: 860px) and (min-aspect-ratio: 4/5){
-    #app{ flex-direction:row; align-items:center; justify-content:center; gap:24px; }
+    #app{ flex-direction:row; align-items:center; justify-content:center; justify-content:safe center; gap:24px; }
     #sidePanel{ align-items:flex-start; max-height:94vh; overflow-y:auto; padding:2px 8px 2px 2px; }
     #sidePanel .titlebar{ width:100%; }
     #sidePanel .controls{ justify-content:flex-start; max-width:280px; }
     #sidePanel .ctrl-block{ align-items:flex-start; width:100%; }
     #sidePanel .chip-group{ justify-content:flex-start; }
     #sidePanel .panel-pop{ justify-content:flex-start; }
+  }
+  /* When content is taller than #app's own box, plain "center" pushes the
+     overflow evenly onto both edges — but you can't scroll into the negative
+     space above, so the top (title) gets clipped with no way to reach it.
+     "safe center" (where supported) falls back to start-aligned instead;
+     this covers browsers old enough not to support "safe", in either layout mode. */
+  @supports not (justify-content: safe center) {
+    #app{ justify-content:flex-start; }
   }
 
   /* Compact mode: on phones every pixel of chrome is a pixel not spent on the
